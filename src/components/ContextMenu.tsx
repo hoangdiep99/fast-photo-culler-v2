@@ -190,7 +190,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
             >
               <div className="flex items-center gap-2">
                 <Edit3 size={13} className="text-amber-400" />
-                <span>Đổi tên & Đồng bộ giờ (Fotonix)...</span>
+                <span>Đổi tên & Đồng bộ giờ...</span>
               </div>
               <span className="text-[10px] text-zinc-500 font-mono">F2</span>
             </button>

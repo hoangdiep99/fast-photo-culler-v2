@@ -299,7 +299,7 @@ export const BatchRenameModal: React.FC<BatchRenameModalProps> = ({
               }`}
             >
               <Clock size={15} />
-              <span>Đồng Bộ Giờ & Mtime (Fotonix)</span>
+              <span>Đồng Bộ Giờ & Mtime</span>
               {totalOffsetSeconds !== 0 && (
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
               )}

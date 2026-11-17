@@ -415,12 +415,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   Fast Photo Culler AI
                 </h3>
                 <p className="text-xs text-amber-400/80 font-mono font-bold">
-                  Version 2.2.0 (digiKam & MediaPipe Powered)
+                  Version 2.3.0 (MediaPipe AI Powered)
                 </p>
               </div>
 
               <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
-                Phần mềm tuyển chọn ảnh RAW & JPEG chuyên nghiệp siêu tốc. Tự động liên kết cơ sở dữ liệu digiKam và phân tích độ mở mắt, độ nét khuôn mặt thời gian thực bằng mô hình học sâu Google MediaPipe.
+                Phần mềm tuyển chọn ảnh RAW & JPEG chuyên nghiệp siêu tốc. Tự động phân tích độ mở mắt, độ nét khuôn mặt và phát hiện rung tay mờ nhòe thời gian thực bằng mô hình học sâu Google MediaPipe.
               </p>
 
               <div className="w-full max-w-xs border-t border-zinc-900 my-1" />
