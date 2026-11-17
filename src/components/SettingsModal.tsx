@@ -415,7 +415,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   Fast Photo Culler AI
                 </h3>
                 <p className="text-xs text-amber-400/80 font-mono font-bold">
-                  Version 2.3.0 (MediaPipe AI Powered)
+                  Version 2.4.0 (MediaPipe AI Powered)
                 </p>
               </div>
 

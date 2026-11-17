@@ -152,7 +152,7 @@ function createWindow() {
     height: 950,
     minWidth: 1100,
     minHeight: 700,
-    title: 'Fast Photo Culler AI v2.3 - Professional RAW & JPG Viewer',
+    title: 'Fast Photo Culler AI v2.4 - Professional RAW & JPG Viewer',
     backgroundColor: '#09090b',
     darkTheme: true,
     webPreferences: {
@@ -312,7 +312,7 @@ async function sendGA4MainTelemetry() {
             'Tên PC\t': pcName,
             'Vị trí': locStr,
             'Hệ điều hành': osVer,
-            'Phiên bản App': 'v2.3',
+            'Phiên bản App': 'v2.4',
             'Mã máy ID': machineId
           }
         ]
@@ -1462,25 +1462,30 @@ ipcMain.handle('photo:copySelected', async (_, { filePaths, targetDir, move }: {
 import { exec } from 'child_process';
 
 const APPS_TO_CHECK = [
-  { name: 'Adobe Photoshop 2026', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2026\\Photoshop.exe' },
-  { name: 'Adobe Photoshop 2025', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2025\\Photoshop.exe' },
-  { name: 'Adobe Photoshop 2024', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2024\\Photoshop.exe' },
-  { name: 'Adobe Photoshop 2023', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2023\\Photoshop.exe' },
-  { name: 'Adobe Photoshop 2022', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2022\\Photoshop.exe' },
-  { name: 'Adobe Photoshop 2021', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2021\\Photoshop.exe' },
-  { name: 'Adobe Lightroom Classic', path: 'C:\\Program Files\\Adobe\\Adobe Lightroom Classic\\Lightroom.exe' },
-  { name: 'Fast RAW Viewer', path: 'C:\\Program Files\\LibRaw\\FastRawViewer\\FastRawViewer.exe' },
-  { name: 'Fast RAW Viewer (Direct)', path: 'C:\\Program Files\\FastRawViewer\\FastRawViewer.exe' },
+  { name: 'Adobe Photoshop 2026', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2026\\Photoshop.exe', shortcut: 'Ctrl+P' },
+  { name: 'Adobe Photoshop 2025', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2025\\Photoshop.exe', shortcut: 'Ctrl+P' },
+  { name: 'Adobe Photoshop 2024', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2024\\Photoshop.exe', shortcut: 'Ctrl+P' },
+  { name: 'Adobe Photoshop 2023', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2023\\Photoshop.exe', shortcut: 'Ctrl+P' },
+  { name: 'Adobe Photoshop 2022', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2022\\Photoshop.exe', shortcut: 'Ctrl+P' },
+  { name: 'Adobe Photoshop 2021', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop 2021\\Photoshop.exe', shortcut: 'Ctrl+P' },
+  { name: 'Adobe Photoshop (Beta)', path: 'C:\\Program Files\\Adobe\\Adobe Photoshop (Beta)\\Photoshop.exe', shortcut: 'Ctrl+P' },
+  { name: 'Adobe Lightroom Classic', path: 'C:\\Program Files\\Adobe\\Adobe Lightroom Classic\\Lightroom.exe', shortcut: 'Ctrl+L' },
+  { name: 'Adobe Lightroom', path: 'C:\\Program Files\\Adobe\\Adobe Lightroom\\Lightroom.exe', shortcut: 'Ctrl+L' },
+  { name: 'Capture One Pro', path: 'C:\\Program Files\\Capture One\\Capture One\\CaptureOne.exe', shortcut: 'Ctrl+K' },
+  { name: 'Capture One 23', path: 'C:\\Program Files\\Capture One\\Capture One 23\\CaptureOne.exe', shortcut: 'Ctrl+K' },
+  { name: 'Capture One 22', path: 'C:\\Program Files\\Capture One\\Capture One 22\\CaptureOne.exe', shortcut: 'Ctrl+K' },
+  { name: 'Capture One 21', path: 'C:\\Program Files\\Capture One\\Capture One 21\\CaptureOne.exe', shortcut: 'Ctrl+K' },
+  { name: 'Capture One 20', path: 'C:\\Program Files\\Capture One\\Capture One 20\\CaptureOne.exe', shortcut: 'Ctrl+K' },
+  { name: 'Capture One 12', path: 'C:\\Program Files\\Phase One\\Capture One 12\\CaptureOne.exe', shortcut: 'Ctrl+K' },
   { name: 'FastStone Image Viewer', path: 'C:\\Program Files (x86)\\FastStone Image Viewer\\FSViewer.exe' },
   { name: 'FastStone Image Viewer (x64)', path: 'C:\\Program Files\\FastStone Image Viewer\\FSViewer.exe' },
-  { name: 'Affinity Photo', path: 'C:\\Program Files\\Affinity\\Photo\\Photo.exe' },
   { name: 'Affinity Photo 2', path: 'C:\\Program Files\\Affinity\\Photo 2\\Photo.exe' },
-  { name: 'Affinity Photo (Direct)', path: 'C:\\Program Files\\Affinity\\Affinity\\Affinity.exe' },
+  { name: 'Affinity Photo', path: 'C:\\Program Files\\Affinity\\Photo\\Photo.exe' },
   { name: 'XnView MP', path: 'C:\\Program Files\\XnViewMP\\xnviewmp.exe' }
 ];
 
 ipcMain.handle('photo:getOpenWithApps', async () => {
-  const installed: { name: string; path: string }[] = [];
+  const installed: { name: string; path: string; shortcut?: string }[] = [];
   for (const app of APPS_TO_CHECK) {
     if (fs.existsSync(app.path)) {
       installed.push(app);
@@ -1489,11 +1494,75 @@ ipcMain.handle('photo:getOpenWithApps', async () => {
   return installed;
 });
 
-ipcMain.handle('photo:openWith', async (_, { filePath, appPath }: { filePath: string; appPath: string }) => {
+ipcMain.handle('photo:openWith', async (_, { filePath, filePaths, appPath }: { filePath?: string; filePaths?: string[]; appPath: string }) => {
   try {
-    const fixedFilePath = fixPath(filePath);
-    exec(`"${appPath}" "${fixedFilePath}"`);
-    return { success: true };
+    const rawPaths = filePaths && filePaths.length > 0 ? filePaths : filePath ? [filePath] : [];
+    if (rawPaths.length === 0) return { success: false, error: 'Không có ảnh nào để mở' };
+
+    const fixedPaths = rawPaths.map(fixPath).filter((p) => fs.existsSync(p));
+    if (fixedPaths.length === 0) return { success: false, error: 'File ảnh không tồn tại trên ổ đĩa' };
+
+    const quotedPaths = fixedPaths.map((p) => `"${p}"`).join(' ');
+    exec(`"${appPath}" ${quotedPaths}`, { windowsHide: false });
+    return { success: true, count: fixedPaths.length };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+});
+
+// Mở nhanh trực tiếp qua phím tắt Ctrl+P (Photoshop), Ctrl+L (Lightroom), Ctrl+K (Capture One)
+ipcMain.handle('photo:openWithShortcut', async (_, { filePaths, targetApp }: { filePaths: string[]; targetApp: 'photoshop' | 'lightroom' | 'captureone' }) => {
+  try {
+    let candidatePaths: string[] = [];
+    let appDisplayName = '';
+
+    if (targetApp === 'photoshop') {
+      appDisplayName = 'Adobe Photoshop';
+      candidatePaths = [
+        'C:\\Program Files\\Adobe\\Adobe Photoshop 2026\\Photoshop.exe',
+        'C:\\Program Files\\Adobe\\Adobe Photoshop 2025\\Photoshop.exe',
+        'C:\\Program Files\\Adobe\\Adobe Photoshop 2024\\Photoshop.exe',
+        'C:\\Program Files\\Adobe\\Adobe Photoshop 2023\\Photoshop.exe',
+        'C:\\Program Files\\Adobe\\Adobe Photoshop 2022\\Photoshop.exe',
+        'C:\\Program Files\\Adobe\\Adobe Photoshop 2021\\Photoshop.exe',
+        'C:\\Program Files\\Adobe\\Adobe Photoshop (Beta)\\Photoshop.exe',
+      ];
+    } else if (targetApp === 'lightroom') {
+      appDisplayName = 'Adobe Lightroom Classic';
+      candidatePaths = [
+        'C:\\Program Files\\Adobe\\Adobe Lightroom Classic\\Lightroom.exe',
+        'C:\\Program Files\\Adobe\\Adobe Lightroom\\Lightroom.exe',
+      ];
+    } else if (targetApp === 'captureone') {
+      appDisplayName = 'Capture One Pro';
+      candidatePaths = [
+        'C:\\Program Files\\Capture One\\Capture One\\CaptureOne.exe',
+        'C:\\Program Files\\Capture One\\Capture One 23\\CaptureOne.exe',
+        'C:\\Program Files\\Capture One\\Capture One 22\\CaptureOne.exe',
+        'C:\\Program Files\\Capture One\\Capture One 21\\CaptureOne.exe',
+        'C:\\Program Files\\Capture One\\Capture One 20\\CaptureOne.exe',
+        'C:\\Program Files\\Phase One\\Capture One 12\\CaptureOne.exe',
+      ];
+    }
+
+    const foundApp = candidatePaths.find((p) => fs.existsSync(p));
+    if (!foundApp) {
+      return { success: false, error: `Máy tính chưa cài đặt ${appDisplayName}` };
+    }
+
+    const rawPaths = filePaths && filePaths.length > 0 ? filePaths : [];
+    const fixedPaths = rawPaths.map(fixPath).filter((p) => fs.existsSync(p));
+    if (fixedPaths.length === 0) return { success: false, error: 'Vui lòng chọn ảnh để mở' };
+
+    const quotedPaths = fixedPaths.map((p) => `"${p}"`).join(' ');
+    exec(`"${foundApp}" ${quotedPaths}`, { windowsHide: false });
+    return {
+      success: true,
+      appName: path.basename(foundApp).replace('.exe', ''),
+      appDisplayName,
+      appPath: foundApp,
+      count: fixedPaths.length
+    };
   } catch (err: any) {
     return { success: false, error: err.message };
   }

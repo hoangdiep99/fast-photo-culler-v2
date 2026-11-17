@@ -11,7 +11,8 @@ import {
   X,
   Tag,
   FileDown,
-  Folder
+  Folder,
+  ExternalLink
 } from 'lucide-react';
 import { PhotoItem, SubfolderItem } from '../types';
 
@@ -60,7 +61,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   onOpenSubfolder,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
-  const [openWithApps, setOpenWithApps] = React.useState<{ name: string; path: string }[]>([]);
+  const [openWithApps, setOpenWithApps] = React.useState<{ name: string; path: string; shortcut?: string }[]>([]);
   const [showOpenWith, setShowOpenWith] = React.useState(false);
 
   useEffect(() => {
@@ -218,34 +219,49 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
                 onMouseLeave={() => setShowOpenWith(false)}
               >
                 <button
-                  className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-zinc-800 text-left transition-colors"
+                  className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-zinc-800 text-left transition-colors text-zinc-200"
                 >
                   <div className="flex items-center gap-2">
-                    <FolderPlus size={13} className="text-emerald-400" />
-                    <span>Mở bằng... (Open with)</span>
+                    <ExternalLink size={13} className="text-cyan-400" />
+                    <span>Mở bằng ứng dụng khác...</span>
                   </div>
                   <span className="text-[10px] text-zinc-500 font-mono">▶</span>
                 </button>
 
                 {showOpenWith && (
-                  <div className="absolute left-full top-0 ml-1 w-56 bg-zinc-950/98 border border-zinc-800 rounded-xl shadow-2xl py-1 text-xs text-zinc-300 backdrop-blur-md z-50">
-                    <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-zinc-500 border-b border-zinc-800/80 mb-1">
-                      Chọn ứng dụng
+                  <div className={`absolute top-0 w-64 bg-zinc-950/98 border border-zinc-800 rounded-xl shadow-2xl py-1 text-xs text-zinc-300 backdrop-blur-md z-50 ${
+                    position.x > window.innerWidth - 320 ? 'right-full mr-1' : 'left-full ml-1'
+                  }`}>
+                    <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-zinc-500 border-b border-zinc-800/80 mb-1 flex items-center justify-between">
+                      <span>Phần mềm chỉnh sửa ảnh</span>
+                      <span className="text-[9px] text-zinc-600 font-mono">Có sẵn ({openWithApps.length})</span>
                     </div>
                     {openWithApps.map((app) => (
                       <button
                         key={app.path}
                         onClick={() => {
-                          const targetPath = position.targetPhoto?.filePath;
-                          if (targetPath && (window as any).electronAPI?.openWith) {
-                            (window as any).electronAPI.openWith(targetPath, app.path);
+                          const selectedPaths = position.selectedPhotos && position.selectedPhotos.length > 0
+                            ? position.selectedPhotos.map((p) => p.filePath)
+                            : position.targetPhoto
+                            ? [position.targetPhoto.filePath]
+                            : [];
+                          if (selectedPaths.length > 0 && (window as any).electronAPI?.openWith) {
+                            (window as any).electronAPI.openWith({ filePaths: selectedPaths, appPath: app.path });
                           }
                           onClose();
                         }}
-                        className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-zinc-800 text-left transition-colors text-zinc-200 truncate"
+                        className="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-850 hover:text-white text-left transition-colors text-zinc-200 group"
                         title={app.path}
                       >
-                        <span>{app.name}</span>
+                        <div className="flex items-center gap-2 truncate">
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 group-hover:scale-150 transition-transform" />
+                          <span className="truncate font-medium">{app.name}</span>
+                        </div>
+                        {app.shortcut && (
+                          <span className="text-[10px] text-amber-400 font-mono font-bold shrink-0 ml-2 bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">
+                            {app.shortcut}
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>

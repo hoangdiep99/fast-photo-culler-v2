@@ -56,5 +56,8 @@ interface Window {
     digikamOpenInDigikam: (filePath: string) => Promise<{ success: boolean }>;
     digikamReadExif: (filePath: string) => Promise<any>;
     digikamWriteExif: (filePath: string, rating?: number, colorLabel?: string) => Promise<{ success: boolean }>;
+    getOpenWithApps: () => Promise<Array<{ name: string; path: string; shortcut?: string }>>;
+    openWith: (params: { filePath?: string; filePaths?: string[]; appPath: string } | string, appPathFallback?: string) => Promise<{ success: boolean; error?: string }>;
+    openWithShortcut: (params: { filePaths: string[]; targetApp: 'photoshop' | 'lightroom' | 'captureone' }) => Promise<{ success: boolean; appName?: string; appDisplayName?: string; appPath?: string; count?: number; error?: string }>;
   };
 }

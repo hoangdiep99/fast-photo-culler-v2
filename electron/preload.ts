@@ -56,9 +56,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   digikamReadExif: (filePath: string) => ipcRenderer.invoke('digikam:readExif', filePath),
   digikamWriteExif: (filePath: string, rating?: number, colorLabel?: string) => ipcRenderer.invoke('digikam:writeExif', { filePath, rating, colorLabel }),
 
-  // 🚀 Open With external applications
+  // 🚀 Open With external applications (Photoshop, Lightroom, Capture One...)
   getOpenWithApps: () => ipcRenderer.invoke('photo:getOpenWithApps'),
-  openWith: (filePath: string, appPath: string) => ipcRenderer.invoke('photo:openWith', { filePath, appPath }),
+  openWith: (params: { filePath?: string; filePaths?: string[]; appPath: string } | string, appPathFallback?: string) => {
+    if (typeof params === 'string') {
+      return ipcRenderer.invoke('photo:openWith', { filePath: params, appPath: appPathFallback });
+    }
+    return ipcRenderer.invoke('photo:openWith', params);
+  },
+  openWithShortcut: (params: { filePaths: string[]; targetApp: 'photoshop' | 'lightroom' | 'captureone' }) =>
+    ipcRenderer.invoke('photo:openWithShortcut', params),
 });
 
 

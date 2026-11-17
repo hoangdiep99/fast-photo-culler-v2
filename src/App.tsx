@@ -1104,6 +1104,27 @@ export const App: React.FC = () => {
         return;
       }
 
+      // Open in Photoshop: Ctrl + P
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        handleOpenWithApp('photoshop');
+        return;
+      }
+
+      // Open in Lightroom Classic: Ctrl + L
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        handleOpenWithApp('lightroom');
+        return;
+      }
+
+      // Open in Capture One: Ctrl + K
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        handleOpenWithApp('captureone');
+        return;
+      }
+
       // Delete: Del / Delete
       if (e.key === 'Delete') {
         e.preventDefault();
@@ -1179,6 +1200,28 @@ export const App: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentPhoto, filteredPhotos.length, setRating, setColorLabel, toggleTag, viewMode, isExportModalOpen, isSettingsModalOpen, isBatchRenameModalOpen, selectedIndices.size]);
+
+  // Mở ảnh nhanh bằng ứng dụng đồ họa chuyên nghiệp (Photoshop, Lightroom, Capture One)
+  const handleOpenWithApp = useCallback(async (targetApp: 'photoshop' | 'lightroom' | 'captureone') => {
+    if (!window.electronAPI?.openWithShortcut) return;
+    const selectedPaths = Array.from(selectedIndices).map((idx) => filteredPhotos[idx]?.filePath).filter(Boolean);
+    const paths = selectedPaths.length > 0 ? selectedPaths : (currentPhoto ? [currentPhoto.filePath] : []);
+    if (paths.length === 0) {
+      addToast('info', 'Vui lòng chọn ảnh để mở');
+      return;
+    }
+
+    try {
+      const res = await window.electronAPI.openWithShortcut({ filePaths: paths, targetApp });
+      if (res?.success) {
+        addToast('success', `✓ Đang mở ${res.count} ảnh bằng ${res.appDisplayName || res.appName}...`);
+      } else {
+        addToast('error', res?.error || `Không thể mở bằng ${targetApp}`);
+      }
+    } catch (err: any) {
+      addToast('error', `Lỗi khi mở ứng dụng: ${err.message || err}`);
+    }
+  }, [selectedIndices, filteredPhotos, currentPhoto, addToast]);
 
   // Export photos handler
   const handleExportSelectedPhotos = async (targetDir: string, move: boolean) => {
