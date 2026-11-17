@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
-import { GridView } from './components/GridView';
+import { GridView, getGridColumnsCount } from './components/GridView';
 import { ImageViewer } from './components/ImageViewer';
 import { ExportModal } from './components/ExportModal';
 import { SettingsModal } from './components/SettingsModal';
@@ -1088,6 +1088,14 @@ export const App: React.FC = () => {
     }
   }, [selectedIndices, filteredPhotos, currentPhoto, addToast]);
 
+  // Tự động cuộn ảnh được chọn vào khung nhìn
+  const scrollPhotoIntoView = useCallback((idx: number) => {
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[data-photo-index="${idx}"]`);
+      el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  }, []);
+
   // Phím tắt bàn phím (Tự động hỗ trợ tùy biến theo cấu hình của người dùng)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1192,22 +1200,51 @@ export const App: React.FC = () => {
         return;
       }
 
-      // Navigation: Next / Prev
-      if (checkAction('prev_photo')) {
-        e.preventDefault();
-        setSelectedIndex((prev) => {
-          const nextIdx = Math.max(0, prev - 1);
-          setSelectedIndices(new Set([nextIdx]));
-          return nextIdx;
-        });
-        return;
-      }
-
+      // Navigation: Sang phải (Next)
       if (checkAction('next_photo')) {
         e.preventDefault();
         setSelectedIndex((prev) => {
           const nextIdx = Math.min(filteredPhotos.length - 1, prev + 1);
           setSelectedIndices(new Set([nextIdx]));
+          scrollPhotoIntoView(nextIdx);
+          return nextIdx;
+        });
+        return;
+      }
+
+      // Navigation: Sang trái (Prev)
+      if (checkAction('prev_photo')) {
+        e.preventDefault();
+        setSelectedIndex((prev) => {
+          const nextIdx = Math.max(0, prev - 1);
+          setSelectedIndices(new Set([nextIdx]));
+          scrollPhotoIntoView(nextIdx);
+          return nextIdx;
+        });
+        return;
+      }
+
+      // Navigation: Xuống hàng dưới (Down row)
+      if (checkAction('down_photo')) {
+        e.preventDefault();
+        const cols = getGridColumnsCount();
+        setSelectedIndex((prev) => {
+          const nextIdx = Math.min(filteredPhotos.length - 1, prev + cols);
+          setSelectedIndices(new Set([nextIdx]));
+          scrollPhotoIntoView(nextIdx);
+          return nextIdx;
+        });
+        return;
+      }
+
+      // Navigation: Lên hàng trên (Up row)
+      if (checkAction('up_photo')) {
+        e.preventDefault();
+        const cols = getGridColumnsCount();
+        setSelectedIndex((prev) => {
+          const nextIdx = Math.max(0, prev - cols);
+          setSelectedIndices(new Set([nextIdx]));
+          scrollPhotoIntoView(nextIdx);
           return nextIdx;
         });
         return;
@@ -1418,6 +1455,7 @@ export const App: React.FC = () => {
               const nextIdx = selectedIndex + 1;
               setSelectedIndex(nextIdx);
               setSelectedIndices(new Set([nextIdx]));
+              scrollPhotoIntoView(nextIdx);
             }
           }}
           onPrev={() => {
@@ -1425,6 +1463,25 @@ export const App: React.FC = () => {
               const prevIdx = selectedIndex - 1;
               setSelectedIndex(prevIdx);
               setSelectedIndices(new Set([prevIdx]));
+              scrollPhotoIntoView(prevIdx);
+            }
+          }}
+          onJumpDown={() => {
+            const cols = getGridColumnsCount();
+            if (selectedIndex < filteredPhotos.length - 1) {
+              const nextIdx = Math.min(filteredPhotos.length - 1, selectedIndex + cols);
+              setSelectedIndex(nextIdx);
+              setSelectedIndices(new Set([nextIdx]));
+              scrollPhotoIntoView(nextIdx);
+            }
+          }}
+          onJumpUp={() => {
+            const cols = getGridColumnsCount();
+            if (selectedIndex > 0) {
+              const prevIdx = Math.max(0, selectedIndex - cols);
+              setSelectedIndex(prevIdx);
+              setSelectedIndices(new Set([prevIdx]));
+              scrollPhotoIntoView(prevIdx);
             }
           }}
           onClose={() => setViewMode('grid')}

@@ -21,6 +21,8 @@ interface ImageViewerProps {
   onSelectPhoto: (index: number, e?: React.MouseEvent) => void;
   onNext: () => void;
   onPrev: () => void;
+  onJumpDown?: () => void;
+  onJumpUp?: () => void;
   onClose: () => void;
   onSetRating: (rating: number) => void;
   onSetColorLabel: (color: ColorLabel) => void;
@@ -63,6 +65,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
   onSelectPhoto,
   onNext,
   onPrev,
+  onJumpDown,
+  onJumpUp,
   onClose,
   onSetRating,
   onSetColorLabel,
@@ -94,7 +98,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
   const filmstripRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
 
-  // Keyboard shortcuts: L (Lock Zoom), R (Rotate CW), Arrow Keys (Prev/Next)
+  // Keyboard shortcuts: L (Lock Zoom), R (Rotate CW), 4 Arrow Keys (Pan when zoomed, Navigate when fit)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
@@ -105,12 +109,38 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
       } else if (e.key === 'r' || e.key === 'R' || e.code === 'KeyR') {
         e.preventDefault();
         setManualRotation((prev) => (prev + 90) % 360);
-      } else if (e.code === 'ArrowRight' || e.code === 'ArrowDown') {
+      } else if (e.code === 'ArrowRight' || e.key === 'ArrowRight') {
         e.preventDefault();
-        onNext();
-      } else if (e.code === 'ArrowLeft' || e.code === 'ArrowUp') {
+        if (zoomScale > 1.05) {
+          // Pan ảnh sang phải
+          setPanPosition((prev) => ({ ...prev, x: prev.x - (e.shiftKey ? 140 : 70) }));
+        } else {
+          onNext();
+        }
+      } else if (e.code === 'ArrowLeft' || e.key === 'ArrowLeft') {
         e.preventDefault();
-        onPrev();
+        if (zoomScale > 1.05) {
+          // Pan ảnh sang trái
+          setPanPosition((prev) => ({ ...prev, x: prev.x + (e.shiftKey ? 140 : 70) }));
+        } else {
+          onPrev();
+        }
+      } else if (e.code === 'ArrowDown' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (zoomScale > 1.05) {
+          // Pan ảnh xuống dưới
+          setPanPosition((prev) => ({ ...prev, y: prev.y - (e.shiftKey ? 140 : 70) }));
+        } else if (onJumpDown) {
+          onJumpDown();
+        }
+      } else if (e.code === 'ArrowUp' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (zoomScale > 1.05) {
+          // Pan ảnh lên trên
+          setPanPosition((prev) => ({ ...prev, y: prev.y + (e.shiftKey ? 140 : 70) }));
+        } else if (onJumpUp) {
+          onJumpUp();
+        }
       }
     };
 
@@ -118,7 +148,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onNext, onPrev]);
+  }, [onNext, onPrev, onJumpDown, onJumpUp, zoomScale]);
 
 
 

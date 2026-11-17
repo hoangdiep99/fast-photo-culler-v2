@@ -34,6 +34,27 @@ interface GridViewProps {
   onContextMenu?: (e: React.MouseEvent, type: 'photo' | 'subfolder' | 'background', item?: PhotoItem | SubfolderItem, index?: number) => void;
 }
 
+// ─── Grid Columns Helper ───────────────────────────────────────────────────
+export function getGridColumnsCount(): number {
+  const container = document.getElementById('photos-grid-container');
+  if (!container) return 5;
+  const cards = container.querySelectorAll<HTMLElement>('[data-photo-card="true"]');
+  if (cards.length >= 2) {
+    const firstTop = cards[0].offsetTop;
+    let cols = 0;
+    for (let i = 0; i < cards.length; i++) {
+      if (Math.abs(cards[i].offsetTop - firstTop) < 6) {
+        cols++;
+      } else {
+        break;
+      }
+    }
+    if (cols > 0) return cols;
+  }
+  const w = container.clientWidth || 1000;
+  return Math.max(1, Math.floor((w + 12) / (180 + 12)));
+}
+
 // ─── Photo Card ────────────────────────────────────────────────────────────
 const PhotoCard = React.memo(({
   photo,
@@ -137,6 +158,8 @@ const PhotoCard = React.memo(({
   return (
     <div
       ref={cardRef}
+      data-photo-card="true"
+      data-photo-index={index}
       onClick={(e) => onSelectPhoto(index, e)}
       onDoubleClick={() => onDoubleClickPhoto(index)}
       onMouseEnter={() => setIsHovered(true)}
@@ -683,6 +706,7 @@ export const GridView: React.FC<GridViewProps> = ({
             )}
 
             <div
+              id="photos-grid-container"
               className="grid gap-3"
               style={{
                 gridTemplateColumns: `repeat(auto-fill, minmax(${cardSize || 180}px, 1fr))`,

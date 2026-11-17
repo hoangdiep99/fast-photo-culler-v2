@@ -29,8 +29,10 @@ export const DEFAULT_SHORTCUTS: ShortcutDefinition[] = [
   { id: 'open_captureone', label: 'Mở bằng Capture One Pro', category: 'external_app', defaultKey: 'Ctrl+K', currentKey: 'Ctrl+K', description: 'Mở ảnh trong Capture One Pro' },
 
   // ── DUYỆT ẢNH & ĐIỀU HƯỚNG (NAVIGATION & VIEW) ──
-  { id: 'next_photo', label: 'Ảnh tiếp theo (Next)', category: 'navigation', defaultKey: 'ArrowRight', currentKey: 'ArrowRight' },
-  { id: 'prev_photo', label: 'Ảnh trước đó (Previous)', category: 'navigation', defaultKey: 'ArrowLeft', currentKey: 'ArrowLeft' },
+  { id: 'next_photo', label: 'Ảnh tiếp theo / Sang phải (Next)', category: 'navigation', defaultKey: 'ArrowRight', currentKey: 'ArrowRight', description: 'Chuyển sang ảnh bên phải' },
+  { id: 'prev_photo', label: 'Ảnh trước đó / Sang trái (Previous)', category: 'navigation', defaultKey: 'ArrowLeft', currentKey: 'ArrowLeft', description: 'Chuyển sang ảnh bên trái' },
+  { id: 'down_photo', label: 'Xuống hàng dưới (Down row)', category: 'navigation', defaultKey: 'ArrowDown', currentKey: 'ArrowDown', description: 'Di chuyển xuống hàng ảnh phía dưới' },
+  { id: 'up_photo', label: 'Lên hàng trên (Up row)', category: 'navigation', defaultKey: 'ArrowUp', currentKey: 'ArrowUp', description: 'Di chuyển lên hàng ảnh phía trên' },
   { id: 'toggle_view', label: 'Chuyển đổi Lưới / Phóng to (Viewer)', category: 'navigation', defaultKey: 'Enter', currentKey: 'Enter' },
   { id: 'compare_view', label: 'So sánh các ảnh đã chọn (Compare)', category: 'navigation', defaultKey: 'C', currentKey: 'C' },
   { id: 'toggle_face_zoom', label: 'Bật/Tắt Bảng soi mắt & mặt AI', category: 'navigation', defaultKey: 'Z', currentKey: 'Z' },
