@@ -1,0 +1,70 @@
+{
+  "name": "fast-photo-culler-v2",
+  "private": true,
+  "version": "2.2.0",
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "start": "electron .",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win"
+  },
+  "build": {
+    "appId": "com.xanhmedia.fastphotocullerv2",
+    "productName": "Fast Photo Culler AI",
+    "npmRebuild": false,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Fast Photo Culler AI",
+      "artifactName": "${productName} Setup v${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName} Portable v${version}.${ext}"
+    }
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^1.0.1",
+    "ag-psd": "^31.0.2",
+    "better-sqlite3": "^11.8.0",
+    "exiftool-vendored": "^37.2.0",
+    "lucide-react": "^0.344.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sharp": "^0.35.3",
+    "sql.js": "^1.14.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "electron": "^29.1.0",
+    "electron-builder": "^24.13.3",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4",
+    "vite-plugin-electron": "^0.28.0",
+    "vite-plugin-electron-renderer": "^0.14.5"
+  }
+}
