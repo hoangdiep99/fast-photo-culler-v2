@@ -33,7 +33,8 @@ jobs:
       - name: Package macOS DMG & ZIP
         run: |
           export CSC_IDENTITY_AUTO_DISCOVERY=false
-          npx electron-builder --mac --publish never
+          npx electron-builder --mac --arm64 --publish never
+          npx electron-builder --mac --x64 --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
