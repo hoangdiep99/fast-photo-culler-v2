@@ -1,5 +1,8 @@
 # Dependencies
 node_modules/
+package-lock.json
+Run-FastPhotoCuller-V2.bat
+scripts/
 .pnp
 .pnp.js
 

@@ -22,7 +22,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install Dependencies
         run: npm install
@@ -30,7 +29,7 @@ jobs:
       - name: Build Web App & Electron
         run: npm run build
 
-      - name: Package macOS DMG & ZIP
+      - name: Package macOS DMG
         run: |
           export CSC_IDENTITY_AUTO_DISCOVERY=false
           npx electron-builder --mac --arm64 --publish never
@@ -47,7 +46,6 @@ jobs:
           name: Fast-Photo-Culler-AI-macOS-DMG
           path: |
             release/*.dmg
-            release/*.zip
           if-no-files-found: error
 
   build-windows:
@@ -61,7 +59,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install Dependencies
         run: npm install
