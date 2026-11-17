@@ -101,7 +101,7 @@ jobs:
       - name: Flatten release assets
         run: |
           mkdir -p release-assets
-          find all-artifacts -type f \( -name "*.dmg" -o -name "*.zip" -o -name "*.exe" \) -exec cp {} release-assets/ \;
+          find all-artifacts -type f \( -name "*.dmg" -o -name "*.exe" \) -exec cp {} release-assets/ \;
           ls -la release-assets
 
       - name: Determine Tag Name
