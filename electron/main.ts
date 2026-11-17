@@ -152,7 +152,7 @@ function createWindow() {
     height: 950,
     minWidth: 1100,
     minHeight: 700,
-    title: 'Fast Photo Culler AI v2.4 - Professional RAW & JPG Viewer',
+    title: 'Fast Photo Culler AI v2.5 - Professional RAW & JPG Viewer',
     backgroundColor: '#09090b',
     darkTheme: true,
     webPreferences: {
@@ -312,7 +312,7 @@ async function sendGA4MainTelemetry() {
             'Tên PC\t': pcName,
             'Vị trí': locStr,
             'Hệ điều hành': osVer,
-            'Phiên bản App': 'v2.4',
+            'Phiên bản App': 'v2.5',
             'Mã máy ID': machineId
           }
         ]

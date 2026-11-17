@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Zap, Grid, Maximize2, X, FolderOpen, Search, CheckSquare, Layers, Edit3, Cpu, Sun, Moon, Monitor, ExternalLink, PanelRight, FileDown } from 'lucide-react';
+import { Settings, Zap, Grid, Maximize2, X, FolderOpen, Search, CheckSquare, Layers, Edit3, Cpu, Sun, Moon, Monitor, ExternalLink, PanelRight, FileDown, Keyboard } from 'lucide-react';
 import { FilterState, CullingStats, RatingFilter, PickStatus, AIFilter, ThemeMode } from '../types';
 
 interface HeaderProps {
@@ -11,6 +11,7 @@ interface HeaderProps {
   autoAdvance: boolean;
   onToggleAutoAdvance: () => void;
   onOpenSettingsModal: () => void;
+  onOpenShortcutsModal?: () => void;
   onOpenBatchRenameModal: () => void;
   onOpenExtractJpgModal?: () => void;
   onOpenCompareView: () => void;
@@ -37,6 +38,7 @@ export const Header = React.memo<HeaderProps>(({
   autoAdvance,
   onToggleAutoAdvance,
   onOpenSettingsModal,
+  onOpenShortcutsModal,
   onOpenBatchRenameModal,
   onOpenExtractJpgModal,
   onOpenCompareView,
@@ -66,7 +68,7 @@ export const Header = React.memo<HeaderProps>(({
         <img src="./icon.png" alt="Fast Photo Culler AI" className="w-5 h-5 rounded object-contain shadow-sm border border-amber-500/30" />
         <span className="tracking-wide">FAST PHOTO CULLER</span>
         <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded text-[10px] font-bold border border-amber-500/30">
-          v2.4
+          v2.5
         </span>
       </div>
 
@@ -290,6 +292,18 @@ export const Header = React.memo<HeaderProps>(({
             {themeMode === 'system' ? 'Auto' : themeMode}
           </span>
         </button>
+
+        {/* Shortcuts Button */}
+        {onOpenShortcutsModal && (
+          <button
+            onClick={onOpenShortcutsModal}
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-amber-400 rounded-lg text-xs font-semibold transition-colors"
+            title="Bảng Tùy Biến Phím Tắt (F1)"
+          >
+            <Keyboard size={13} className="text-amber-400" />
+            <span className="text-[11px] font-mono hidden md:inline">Phím tắt</span>
+          </button>
+        )}
 
         {/* Settings Gear Button */}
         <button

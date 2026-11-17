@@ -8,11 +8,13 @@ import { SettingsModal } from './components/SettingsModal';
 import { CompareView } from './components/CompareView';
 import { BatchRenameModal } from './components/BatchRenameModal';
 import { ExtractJpgModal } from './components/ExtractJpgModal';
+import { ShortcutsModal } from './components/ShortcutsModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { ContextMenu, ContextMenuPosition } from './components/ContextMenu';
 import { CreateFolderModal } from './components/CreateFolderModal';
 import { FaceZoomPanel } from './components/FaceZoomPanel';
 import { analyzeBurstGroups } from './utils/burstGroupEngine';
+import { loadCustomShortcuts, matchesShortcut, ShortcutDefinition } from './utils/shortcutManager';
 
 
 
@@ -66,6 +68,8 @@ export const App: React.FC = () => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState<boolean>(false);
   const [isBatchRenameModalOpen, setIsBatchRenameModalOpen] = useState<boolean>(false);
   const [isExtractJpgModalOpen, setIsExtractJpgModalOpen] = useState<boolean>(false);
+  const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState<boolean>(false);
+  const [shortcuts, setShortcuts] = useState<ShortcutDefinition[]>(() => loadCustomShortcuts());
 
 
   const [rawResolution, setRawResolution] = useState<RawPreviewResolution>('max');
@@ -1062,145 +1066,6 @@ export const App: React.FC = () => {
     }
   }, [selectedIndices, filteredPhotos, currentFolder]);
 
-  // Phím tắt bàn phím
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-
-      // Select All: Ctrl + A
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'a') {
-        e.preventDefault();
-        const allIndices = new Set<number>();
-        for (let i = 0; i < filteredPhotos.length; i++) allIndices.add(i);
-        setSelectedIndices(allIndices);
-        return;
-      }
-
-      // Copy: Ctrl + C
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
-        e.preventDefault();
-        handleCopyFiles();
-        return;
-      }
-
-      // Cut: Ctrl + X
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'x') {
-        e.preventDefault();
-        handleCutFiles();
-        return;
-      }
-
-      // Paste: Ctrl + V
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
-        e.preventDefault();
-        handlePasteFiles();
-        return;
-      }
-
-      // Extract JPG from RAW: Ctrl + E
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'e') {
-        e.preventDefault();
-        setIsExtractJpgModalOpen(true);
-        return;
-      }
-
-      // Open in Photoshop: Ctrl + P
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
-        e.preventDefault();
-        handleOpenWithApp('photoshop');
-        return;
-      }
-
-      // Open in Lightroom Classic: Ctrl + L
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
-        e.preventDefault();
-        handleOpenWithApp('lightroom');
-        return;
-      }
-
-      // Open in Capture One: Ctrl + K
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        handleOpenWithApp('captureone');
-        return;
-      }
-
-      // Delete: Del / Delete
-      if (e.key === 'Delete') {
-        e.preventDefault();
-        handleDeleteFiles();
-        return;
-      }
-
-      // Batch Rename: F2
-      if (e.key === 'F2' && selectedIndices.size >= 1) {
-        e.preventDefault();
-        setIsBatchRenameModalOpen(true);
-        return;
-      }
-
-      // Compare View: C
-      if ((e.key === 'c' || e.key === 'C') && selectedIndices.size >= 2) {
-        e.preventDefault();
-        setViewMode('compare');
-        return;
-      }
-
-
-      if (!currentPhoto) return;
-
-      switch (e.key) {
-        case '1': setRating(1); break;
-        case '2': setRating(2); break;
-        case '3': setRating(3); break;
-        case '4': setRating(4); break;
-        case '5': setRating(5); break;
-        case '0': setRating(0); break;
-        case '6': setColorLabel('red'); break;
-        case '7': setColorLabel('yellow'); break;
-        case '8': setColorLabel('green'); break;
-        case '9': setColorLabel('blue'); break;
-        case 't': case 'T': toggleTag(); break;
-        case 'b': case 'B':
-          setFilter((prev) => ({ ...prev, aiFilter: prev.aiFilter === 'best' ? 'all' : 'best' }));
-          break;
-        case 'z': case 'Z':
-          setIsFacePanelOpen((prev) => !prev);
-          break;
-        case 'a': case 'A': setAutoAdvance((prev) => !prev); break;
-        case 'ArrowLeft': case 'ArrowUp':
-          e.preventDefault();
-          setSelectedIndex((prev) => {
-            const nextIdx = Math.max(0, prev - 1);
-            setSelectedIndices(new Set([nextIdx]));
-            return nextIdx;
-          });
-          break;
-        case 'ArrowRight': case 'ArrowDown':
-          e.preventDefault();
-          setSelectedIndex((prev) => {
-            const nextIdx = Math.min(filteredPhotos.length - 1, prev + 1);
-            setSelectedIndices(new Set([nextIdx]));
-            return nextIdx;
-          });
-          break;
-        case 'Enter':
-          e.preventDefault();
-          setViewMode((prev) => (prev === 'grid' ? 'viewer' : 'grid'));
-          break;
-        case 'Escape':
-          if (viewMode === 'viewer' || viewMode === 'compare') setViewMode('grid');
-          if (isExportModalOpen) setIsExportModalOpen(false);
-          if (isSettingsModalOpen) setIsSettingsModalOpen(false);
-          if (isBatchRenameModalOpen) setIsBatchRenameModalOpen(false);
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentPhoto, filteredPhotos.length, setRating, setColorLabel, toggleTag, viewMode, isExportModalOpen, isSettingsModalOpen, isBatchRenameModalOpen, selectedIndices.size]);
-
   // Mở ảnh nhanh bằng ứng dụng đồ họa chuyên nghiệp (Photoshop, Lightroom, Capture One)
   const handleOpenWithApp = useCallback(async (targetApp: 'photoshop' | 'lightroom' | 'captureone') => {
     if (!window.electronAPI?.openWithShortcut) return;
@@ -1222,6 +1087,197 @@ export const App: React.FC = () => {
       addToast('error', `Lỗi khi mở ứng dụng: ${err.message || err}`);
     }
   }, [selectedIndices, filteredPhotos, currentPhoto, addToast]);
+
+  // Phím tắt bàn phím (Tự động hỗ trợ tùy biến theo cấu hình của người dùng)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      const checkAction = (id: string): boolean => {
+        const item = shortcuts.find((s) => s.id === id);
+        if (!item || !item.currentKey) return false;
+        return matchesShortcut(e, item.currentKey);
+      };
+
+      // Mở bảng Tùy biến phím tắt (F1 mặc định)
+      if (checkAction('shortcuts_modal')) {
+        e.preventDefault();
+        setIsShortcutsModalOpen((prev) => !prev);
+        return;
+      }
+
+      // Select All: Ctrl + A
+      if (checkAction('select_all')) {
+        e.preventDefault();
+        const allIndices = new Set<number>();
+        for (let i = 0; i < filteredPhotos.length; i++) allIndices.add(i);
+        setSelectedIndices(allIndices);
+        return;
+      }
+
+      // Copy: Ctrl + C
+      if (checkAction('copy_files')) {
+        e.preventDefault();
+        handleCopyFiles();
+        return;
+      }
+
+      // Cut: Ctrl + X
+      if (checkAction('cut_files')) {
+        e.preventDefault();
+        handleCutFiles();
+        return;
+      }
+
+      // Paste: Ctrl + V
+      if (checkAction('paste_files')) {
+        e.preventDefault();
+        handlePasteFiles();
+        return;
+      }
+
+      // Extract JPG from RAW: Ctrl + E
+      if (checkAction('extract_jpg')) {
+        e.preventDefault();
+        setIsExtractJpgModalOpen(true);
+        return;
+      }
+
+      // Open in Photoshop: Ctrl + P
+      if (checkAction('open_photoshop')) {
+        e.preventDefault();
+        handleOpenWithApp('photoshop');
+        return;
+      }
+
+      // Open in Lightroom Classic: Ctrl + L
+      if (checkAction('open_lightroom')) {
+        e.preventDefault();
+        handleOpenWithApp('lightroom');
+        return;
+      }
+
+      // Open in Capture One: Ctrl + K
+      if (checkAction('open_captureone')) {
+        e.preventDefault();
+        handleOpenWithApp('captureone');
+        return;
+      }
+
+      // Delete: Del / Delete
+      if (checkAction('delete_files')) {
+        e.preventDefault();
+        handleDeleteFiles();
+        return;
+      }
+
+      // Batch Rename: F2
+      if (checkAction('batch_rename') && selectedIndices.size >= 1) {
+        e.preventDefault();
+        setIsBatchRenameModalOpen(true);
+        return;
+      }
+
+      // Compare View: C
+      if (checkAction('compare_view') && selectedIndices.size >= 2) {
+        e.preventDefault();
+        setViewMode('compare');
+        return;
+      }
+
+      // Toggle Viewer / Grid: Enter
+      if (checkAction('toggle_view')) {
+        e.preventDefault();
+        setViewMode((prev) => (prev === 'grid' ? 'viewer' : 'grid'));
+        return;
+      }
+
+      // Navigation: Next / Prev
+      if (checkAction('prev_photo')) {
+        e.preventDefault();
+        setSelectedIndex((prev) => {
+          const nextIdx = Math.max(0, prev - 1);
+          setSelectedIndices(new Set([nextIdx]));
+          return nextIdx;
+        });
+        return;
+      }
+
+      if (checkAction('next_photo')) {
+        e.preventDefault();
+        setSelectedIndex((prev) => {
+          const nextIdx = Math.min(filteredPhotos.length - 1, prev + 1);
+          setSelectedIndices(new Set([nextIdx]));
+          return nextIdx;
+        });
+        return;
+      }
+
+      // Đóng các modal bằng Escape
+      if (e.key === 'Escape') {
+        if (isShortcutsModalOpen) {
+          setIsShortcutsModalOpen(false);
+          return;
+        }
+        if (viewMode === 'viewer' || viewMode === 'compare') setViewMode('grid');
+        if (isExportModalOpen) setIsExportModalOpen(false);
+        if (isSettingsModalOpen) setIsSettingsModalOpen(false);
+        if (isBatchRenameModalOpen) setIsBatchRenameModalOpen(false);
+        if (isExtractJpgModalOpen) setIsExtractJpgModalOpen(false);
+        return;
+      }
+
+      if (!currentPhoto) return;
+
+      // Rating: 0 - 5
+      if (checkAction('rating_0')) { setRating(0); return; }
+      if (checkAction('rating_1')) { setRating(1); return; }
+      if (checkAction('rating_2')) { setRating(2); return; }
+      if (checkAction('rating_3')) { setRating(3); return; }
+      if (checkAction('rating_4')) { setRating(4); return; }
+      if (checkAction('rating_5')) { setRating(5); return; }
+
+      // Color labels: 6 - 9
+      if (checkAction('color_red')) { setColorLabel('red'); return; }
+      if (checkAction('color_yellow')) { setColorLabel('yellow'); return; }
+      if (checkAction('color_green')) { setColorLabel('green'); return; }
+      if (checkAction('color_blue')) { setColorLabel('blue'); return; }
+
+      // Tag & Reject
+      if (checkAction('tag_photo')) { toggleTag(); return; }
+      if (checkAction('reject_photo')) { setPickStatusForSelected('rejected'); return; }
+
+      // Auto advance
+      if (checkAction('auto_advance')) { setAutoAdvance((prev) => !prev); return; }
+
+      // Toggle Face & Eye AI Panel
+      if (checkAction('toggle_face_zoom')) { setIsFacePanelOpen((prev) => !prev); return; }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    shortcuts,
+    currentPhoto,
+    filteredPhotos,
+    filteredPhotos.length,
+    setRating,
+    setColorLabel,
+    toggleTag,
+    setPickStatusForSelected,
+    viewMode,
+    isExportModalOpen,
+    isSettingsModalOpen,
+    isBatchRenameModalOpen,
+    isExtractJpgModalOpen,
+    isShortcutsModalOpen,
+    selectedIndices,
+    handleCopyFiles,
+    handleCutFiles,
+    handlePasteFiles,
+    handleDeleteFiles,
+    handleOpenWithApp,
+  ]);
 
   // Export photos handler
   const handleExportSelectedPhotos = async (targetDir: string, move: boolean) => {
@@ -1256,6 +1312,7 @@ export const App: React.FC = () => {
         autoAdvance={autoAdvance}
         onToggleAutoAdvance={() => setAutoAdvance(!autoAdvance)}
         onOpenSettingsModal={() => setIsSettingsModalOpen(true)}
+        onOpenShortcutsModal={() => setIsShortcutsModalOpen(true)}
         onOpenBatchRenameModal={() => setIsBatchRenameModalOpen(true)}
         onOpenExtractJpgModal={() => setIsExtractJpgModalOpen(true)}
         onOpenCompareView={() => setViewMode('compare')}
@@ -1413,6 +1470,14 @@ export const App: React.FC = () => {
             setPhotos((prev) => prev.map((p) => ({ ...p, aiData: undefined })));
             setIsAIScanning(true);
           }}
+        />
+      )}
+
+      {/* Custom Keyboard Shortcuts Manager Modal */}
+      {isShortcutsModalOpen && (
+        <ShortcutsModal
+          onClose={() => setIsShortcutsModalOpen(false)}
+          onShortcutsUpdated={(newShortcuts) => setShortcuts(newShortcuts)}
         />
       )}
 
