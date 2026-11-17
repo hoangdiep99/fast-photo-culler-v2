@@ -1,7 +1,7 @@
 {
   "name": "fast-photo-culler-v2",
   "private": true,
-  "version": "2.6.0",
+  "version": "2.7.0",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "build": "tsc && vite build",
     "start": "electron .",
     "dist": "npm run build && electron-builder",
-    "dist:win": "npm run build && electron-builder --win"
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac"
   },
   "build": {
     "appId": "com.xanhmedia.fastphotocullerv2",
@@ -39,6 +40,45 @@
     },
     "portable": {
       "artifactName": "${productName} Portable v${version}.${ext}"
+    },
+    "mac": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.photography",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null,
+      "artifactName": "${productName} v${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "${productName} v${version}",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     }
   },
   "dependencies": {
