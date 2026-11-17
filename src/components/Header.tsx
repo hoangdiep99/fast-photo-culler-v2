@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Zap, Grid, Maximize2, X, FolderOpen, Search, CheckSquare, Layers, Edit3, Cpu, Sun, Moon, Monitor, ExternalLink, PanelRight, FileDown, Keyboard } from 'lucide-react';
+import { Settings, Zap, Grid, Maximize2, X, FolderOpen, Search, CheckSquare, Layers, Edit3, Cpu, Sun, Moon, Monitor, ExternalLink, PanelRight, FileDown, Keyboard, Sparkles } from 'lucide-react';
 import { FilterState, CullingStats, RatingFilter, PickStatus, AIFilter, ThemeMode } from '../types';
 
 interface HeaderProps {
@@ -27,6 +27,9 @@ interface HeaderProps {
   onOpenInDigikam?: () => void;
   isFacePanelOpen?: boolean;
   onToggleFacePanel?: () => void;
+  updateAvailable?: boolean;
+  latestVersion?: string;
+  onOpenUpdateModal?: () => void;
 }
 
 export const Header = React.memo<HeaderProps>(({
@@ -54,6 +57,9 @@ export const Header = React.memo<HeaderProps>(({
   onOpenInDigikam,
   isFacePanelOpen = true,
   onToggleFacePanel,
+  updateAvailable,
+  latestVersion,
+  onOpenUpdateModal,
 }) => {
 
   const percent =
@@ -68,7 +74,7 @@ export const Header = React.memo<HeaderProps>(({
         <img src="./icon.png" alt="Fast Photo Culler AI" className="w-5 h-5 rounded object-contain shadow-sm border border-amber-500/30" />
         <span className="tracking-wide">FAST PHOTO CULLER</span>
         <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded text-[10px] font-bold border border-amber-500/30">
-          v2.7
+          v2.8
         </span>
       </div>
 
@@ -302,6 +308,18 @@ export const Header = React.memo<HeaderProps>(({
           >
             <Keyboard size={13} className="text-amber-400" />
             <span className="text-[11px] font-mono hidden md:inline">Phím tắt</span>
+          </button>
+        )}
+
+        {/* Update Available Badge */}
+        {updateAvailable && onOpenUpdateModal && (
+          <button
+            onClick={onOpenUpdateModal}
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 rounded-lg text-xs font-bold animate-pulse transition-all cursor-pointer shadow-[0_0_12px_rgba(245,158,11,0.3)]"
+            title={`Đã có bản cập nhật v${latestVersion}! Bấm để cập nhật ngay`}
+          >
+            <Sparkles size={13} className="text-amber-400" />
+            <span className="text-[11px] font-mono">Bản mới v{latestVersion}</span>
           </button>
         )}
 

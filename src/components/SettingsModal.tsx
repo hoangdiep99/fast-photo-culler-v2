@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, FolderOpen, Trash2, HardDrive, Cpu, Check, Save, Sun, Moon, Monitor } from 'lucide-react';
+import { X, FolderOpen, Trash2, HardDrive, Cpu, Check, Save, Sun, Moon, Monitor, RefreshCw, Sparkles, Download } from 'lucide-react';
 import { CacheInfo, RawPreviewResolution, ThemeMode } from '../types';
 
 interface SettingsModalProps {
@@ -11,6 +11,7 @@ interface SettingsModalProps {
   onChangeEyeThreshold?: (pct: number) => void;
   themeMode: ThemeMode;
   onChangeThemeMode: (mode: ThemeMode) => void;
+  onOpenUpdateModal?: (info: any) => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -22,6 +23,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onChangeEyeThreshold,
   themeMode,
   onChangeThemeMode,
+  onOpenUpdateModal,
 }) => {
 
   const [cacheInfo, setCacheInfo] = useState<CacheInfo>({
@@ -45,6 +47,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   });
   const [isTestingApiKey, setIsTestingApiKey] = useState<boolean>(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  // 🔄 Update States
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const [updateStatusText, setUpdateStatusText] = useState<string | null>(null);
+
+  const handleCheckUpdate = async () => {
+    if (!window.electronAPI?.checkForUpdates) {
+      setUpdateStatusText('Chức năng chỉ hoạt động trên ứng dụng.');
+      return;
+    }
+    setIsCheckingUpdate(true);
+    setUpdateStatusText('Đang kiểm tra phiên bản mới...');
+    try {
+      const res = await window.electronAPI.checkForUpdates();
+      if (res?.updateAvailable) {
+        setUpdateStatusText(`🚀 Đã có bản mới v${res.latestVersion}!`);
+        onOpenUpdateModal?.(res);
+      } else {
+        setUpdateStatusText('✓ Bạn đang sử dụng phiên bản mới nhất!');
+      }
+    } catch (err: any) {
+      setUpdateStatusText(`Lỗi khi kiểm tra: ${err.message || err}`);
+    } finally {
+      setIsCheckingUpdate(false);
+    }
+  };
 
   useEffect(() => {
     if (window.electronAPI) {
@@ -415,8 +443,31 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   Fast Photo Culler AI
                 </h3>
                 <p className="text-xs text-amber-400/80 font-mono font-bold">
-                  Version 2.7.0 (MediaPipe AI Powered)
+                  Version 2.8.0 (MediaPipe AI Powered)
                 </p>
+              </div>
+
+              {/* Auto Update Check Box */}
+              <div className="w-full max-w-sm bg-zinc-900/60 border border-zinc-800 rounded-xl p-3 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-zinc-300 flex items-center gap-1.5">
+                    <RefreshCw size={12} className={isCheckingUpdate ? 'animate-spin text-amber-400' : 'text-zinc-400'} />
+                    Cập nhật phần mềm
+                  </span>
+                  <button
+                    onClick={handleCheckUpdate}
+                    disabled={isCheckingUpdate}
+                    className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+                  >
+                    <RefreshCw size={11} className={isCheckingUpdate ? 'animate-spin' : ''} />
+                    <span>{isCheckingUpdate ? 'Đang kiểm tra...' : 'Kiểm tra ngay'}</span>
+                  </button>
+                </div>
+                {updateStatusText && (
+                  <p className="text-[11px] font-mono text-amber-400/90 leading-tight">
+                    {updateStatusText}
+                  </p>
+                )}
               </div>
 
               <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">

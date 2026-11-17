@@ -73,6 +73,11 @@ async function buildIcon() {
     .png()
     .toBuffer();
 
+  const png512Buffer = await sharp(Buffer.from(compositeSvg))
+    .resize(512, 512)
+    .png()
+    .toBuffer();
+
   // Create standard ICO file buffer (22 bytes header + png file content)
   const icoHeader = Buffer.alloc(22);
   icoHeader.writeUInt16LE(0, 0);     // Reserved
@@ -89,10 +94,10 @@ async function buildIcon() {
 
   const icoBuffer = Buffer.concat([icoHeader, pngBuffer]);
   fs.writeFileSync(path.join(buildDir, 'icon.ico'), icoBuffer);
-  fs.writeFileSync(path.join(buildDir, 'icon.png'), pngBuffer);
+  fs.writeFileSync(path.join(buildDir, 'icon.png'), png512Buffer);
 
   // Copy to public folder too so it can be used on web view if needed
-  fs.writeFileSync(path.join(projectRoot, 'public/icon.png'), pngBuffer);
+  fs.writeFileSync(path.join(projectRoot, 'public/icon.png'), png512Buffer);
 
   console.log('✅ Generated professional App Icon (PNG & ICO) in /build folder!');
 }

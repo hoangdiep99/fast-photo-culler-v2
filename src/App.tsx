@@ -9,6 +9,7 @@ import { CompareView } from './components/CompareView';
 import { BatchRenameModal } from './components/BatchRenameModal';
 import { ExtractJpgModal } from './components/ExtractJpgModal';
 import { ShortcutsModal } from './components/ShortcutsModal';
+import { UpdateModal } from './components/UpdateModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { ContextMenu, ContextMenuPosition } from './components/ContextMenu';
 import { CreateFolderModal } from './components/CreateFolderModal';
@@ -70,6 +71,8 @@ export const App: React.FC = () => {
   const [isExtractJpgModalOpen, setIsExtractJpgModalOpen] = useState<boolean>(false);
   const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState<boolean>(false);
   const [shortcuts, setShortcuts] = useState<ShortcutDefinition[]>(() => loadCustomShortcuts());
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
+  const [availableUpdate, setAvailableUpdate] = useState<any | null>(null);
 
 
   const [rawResolution, setRawResolution] = useState<RawPreviewResolution>('max');
@@ -227,6 +230,22 @@ export const App: React.FC = () => {
   const dismissToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
+
+  // 🔄 Tự động kiểm tra bản cập nhật mới từ GitHub Releases khi khởi động app
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      try {
+        if (window.electronAPI?.checkForUpdates) {
+          const res = await window.electronAPI.checkForUpdates();
+          if (res?.updateAvailable) {
+            setAvailableUpdate(res);
+            addToast('info', `🚀 Đã có bản cập nhật mới v${res.latestVersion}! Bấm vào góc trên để cập nhật.`);
+          }
+        }
+      } catch {}
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, [addToast]);
 
   // Context Menu, Clipboard & Create Folder Modal State
   const [contextMenuPos, setContextMenuPos] = useState<ContextMenuPosition | null>(null);
@@ -1364,6 +1383,9 @@ export const App: React.FC = () => {
         onThemeChange={handleThemeChange}
         isFacePanelOpen={isFacePanelOpen}
         onToggleFacePanel={() => setIsFacePanelOpen((prev) => !prev)}
+        updateAvailable={!!availableUpdate}
+        latestVersion={availableUpdate?.latestVersion}
+        onOpenUpdateModal={() => setIsUpdateModalOpen(true)}
         onOpenInDigikam={() => {
           if (currentPhoto && window.electronAPI && window.electronAPI.digikamOpenInShowfoto) {
             window.electronAPI.digikamOpenInShowfoto(currentPhoto.filePath);
@@ -1523,6 +1545,10 @@ export const App: React.FC = () => {
           onChangeEyeThreshold={setEyeThresholdPct}
           themeMode={themeMode}
           onChangeThemeMode={handleThemeChange}
+          onOpenUpdateModal={(info) => {
+            setAvailableUpdate(info);
+            setIsUpdateModalOpen(true);
+          }}
           onClearAICache={() => {
             setPhotos((prev) => prev.map((p) => ({ ...p, aiData: undefined })));
             setIsAIScanning(true);
@@ -1535,6 +1561,14 @@ export const App: React.FC = () => {
         <ShortcutsModal
           onClose={() => setIsShortcutsModalOpen(false)}
           onShortcutsUpdated={(newShortcuts) => setShortcuts(newShortcuts)}
+        />
+      )}
+
+      {/* Auto Update Modal */}
+      {isUpdateModalOpen && availableUpdate && (
+        <UpdateModal
+          updateInfo={availableUpdate}
+          onClose={() => setIsUpdateModalOpen(false)}
         />
       )}
 

@@ -59,5 +59,10 @@ interface Window {
     getOpenWithApps: () => Promise<Array<{ name: string; path: string; shortcut?: string }>>;
     openWith: (params: { filePath?: string; filePaths?: string[]; appPath: string } | string, appPathFallback?: string) => Promise<{ success: boolean; error?: string }>;
     openWithShortcut: (params: { filePaths: string[]; targetApp: 'photoshop' | 'lightroom' | 'captureone' }) => Promise<{ success: boolean; appName?: string; appDisplayName?: string; appPath?: string; count?: number; error?: string }>;
+
+    // Auto-Updater
+    checkForUpdates: () => Promise<any>;
+    downloadAndInstallUpdate: (downloadUrl: string) => Promise<{ success: boolean; message?: string; error?: string }>;
+    onUpdateDownloadProgress: (callback: (data: { percent: number; downloadedMB: number; totalMB: number; speedMBs: number }) => void) => () => void;
   };
 }

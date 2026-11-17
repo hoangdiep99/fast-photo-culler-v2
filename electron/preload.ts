@@ -66,6 +66,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   openWithShortcut: (params: { filePaths: string[]; targetApp: 'photoshop' | 'lightroom' | 'captureone' }) =>
     ipcRenderer.invoke('photo:openWithShortcut', params),
+
+  // 🔄 Auto-Updater
+  checkForUpdates: () => ipcRenderer.invoke('updater:check'),
+  downloadAndInstallUpdate: (assetUrl: string) => ipcRenderer.invoke('updater:downloadAndInstall', assetUrl),
+  onUpdateDownloadProgress: (callback: (data: { percent: number; downloadedMB: number; totalMB: number; speedMBs: number }) => void) => {
+    const handler = (_: any, data: any) => callback(data);
+    ipcRenderer.on('updater:progress', handler);
+    return () => ipcRenderer.removeListener('updater:progress', handler);
+  },
 });
 
 
