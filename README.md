@@ -8,7 +8,8 @@
 
 ### **Phần mềm tuyển chọn & lọc ảnh chuyên nghiệp siêu tốc thế hệ mới tích hợp Trí tuệ Nhân tạo AI (MediaPipe Face & Eye Mesh)**
 
-[![Release Version](https://img.shields.io/badge/version-v2.10.0-amber.svg?style=for-the-badge)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
+[![Release Version](https://img.shields.io/badge/version-v2.11.0-amber.svg?style=for-the-badge)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
+[![Total Downloads](https://img.shields.io/github/downloads/hoangdiep99/fast-photo-culler-v2/total.svg?style=for-the-badge&logo=github&label=TỔNG%20LƯỢT%20TẢI&color=10b981)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
 [![Platform Windows](https://img.shields.io/badge/platform-Windows-blue.svg?style=for-the-badge&logo=windows)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
 [![Platform macOS](https://img.shields.io/badge/platform-macOS-black.svg?style=for-the-badge&logo=apple)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)](LICENSE)
@@ -22,12 +23,28 @@
 
 | Hệ điều hành | Phiên bản | Định dạng | Tải về trực tiếp |
 | :--- | :--- | :---: | :--- |
-| **🪟 Windows (Khuyên dùng)** | **v2.10.0 Setup** (Bản cài đặt tiêu chuẩn) | `.exe` | [**⬇️ Tải Setup (.exe)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
-| **🪟 Windows (Chạy ngay)** | **v2.10.0 Portable** (Không cần cài đặt) | `.exe` | [**⬇️ Tải Portable (.exe)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
+| **🪟 Windows (Khuyên dùng)** | **v2.11.0 Setup** (Bản cài đặt tiêu chuẩn) | `.exe` | [**⬇️ Tải Setup (.exe)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
+| **🪟 Windows (Chạy ngay)** | **v2.11.0 Portable** (Không cần cài đặt) | `.exe` | [**⬇️ Tải Portable (.exe)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
 | **🍎 macOS (Apple Silicon)** | **Chip M1 / M2 / M3 / M4** | `.dmg` | [**⬇️ Tải cho Apple Silicon (.dmg)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
 | **🍎 macOS (Intel)** | **Chip Intel (Core i5/i7/i9)** | `.dmg` | [**⬇️ Tải cho Mac Intel (.dmg)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
 
 > 💡 *Bạn có thể xem toàn bộ lịch sử phát hành và tải các bản build tại mục [**GitHub Releases**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases).*
+
+---
+
+### 📊 Thống kê lượt tải phần mềm (Download Analytics)
+
+<p align="center">
+  <a href="https://github.com/hoangdiep99/fast-photo-culler-v2/releases">
+    <img src="https://img.shields.io/github/downloads/hoangdiep99/fast-photo-culler-v2/total?style=for-the-badge&logo=github&label=T%E1%BB%95ng%20l%C6%B0%E1%BB%A3t%20t%E1%BA%A3i%20to%C3%A0n%20c%E1%BA%A7u&color=10b981" alt="Tổng lượt tải toàn cầu" />
+  </a>
+  <a href="https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest">
+    <img src="https://img.shields.io/github/downloads/hoangdiep99/fast-photo-culler-v2/latest/total?style=for-the-badge&logo=github&label=B%E1%BA%A3n%20m%E1%BB%9Bi%20nh%E1%BA%A5t&color=0284c7" alt="Lượt tải bản mới nhất" />
+  </a>
+  <a href="https://github.com/hoangdiep99/fast-photo-culler-v2/stargazers">
+    <img src="https://img.shields.io/github/stars/hoangdiep99/fast-photo-culler-v2?style=for-the-badge&logo=github&label=Stars%20y%C3%AAu%20th%C3%ADch&color=f59e0b" alt="Stars yêu thích" />
+  </a>
+</p>
 
 ---
 
@@ -152,12 +169,12 @@ Với công nghệ render trực tiếp stream C++ Native cùng mô hình trí t
 ### Dành cho Windows:
 1. Truy cập mục [**Releases**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases).
 2. Tải về file:
-   - **`Fast Photo Culler AI Setup v2.10.0.exe`**: Bộ cài đặt tự động tạo biểu tượng trên Desktop và Start Menu.
-   - Hoặc **`Fast Photo Culler AI Portable v2.10.0.exe`**: Bản chạy trực tiếp không cần cài đặt.
+   - **`Fast Photo Culler AI Setup v2.11.0.exe`**: Bộ cài đặt tự động tạo biểu tượng trên Desktop và Start Menu.
+   - Hoặc **`Fast Photo Culler AI Portable v2.11.0.exe`**: Bản chạy trực tiếp không cần cài đặt.
 3. Mở phần mềm, chọn thư mục chứa ảnh (hoặc kéo thả thư mục vào app) và bắt đầu tuyển chọn ảnh siêu tốc!
 
 ### Dành cho macOS (Apple Silicon & Intel):
-1. Tải về file **`Fast Photo Culler AI v2.10.0-arm64.dmg`** (cho chip M1/M2/M3/M4) hoặc **`Fast Photo Culler AI v2.10.0-x64.dmg`** (cho chip Intel).
+1. Tải về file **`Fast Photo Culler AI v2.11.0-arm64.dmg`** (cho chip M1/M2/M3/M4) hoặc **`Fast Photo Culler AI v2.11.0-x64.dmg`** (cho chip Intel).
 2. Mở file `.dmg` và kéo biểu tượng **Fast Photo Culler AI** vào thư mục **Applications**.
 
 ---

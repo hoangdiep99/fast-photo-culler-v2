@@ -51,6 +51,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   // 🔄 Update States
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [updateStatusText, setUpdateStatusText] = useState<string | null>(null);
+  const [downloadCount, setDownloadCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('https://api.github.com/repos/hoangdiep99/fast-photo-culler-v2/releases')
+      .then((r) => r.json())
+      .then((releases) => {
+        if (Array.isArray(releases)) {
+          let total = 0;
+          releases.forEach((rel) => {
+            if (Array.isArray(rel.assets)) {
+              rel.assets.forEach((asset: any) => {
+                total += asset.download_count || 0;
+              });
+            }
+          });
+          setDownloadCount(total);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleCheckUpdate = async () => {
     if (!window.electronAPI?.checkForUpdates) {
@@ -443,7 +463,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   Fast Photo Culler AI
                 </h3>
                 <p className="text-xs text-amber-400/80 font-mono font-bold">
-                  Version 2.10.0 (MediaPipe AI Powered)
+                  Version 2.11.0 (MediaPipe AI Powered)
                 </p>
               </div>
 
@@ -468,6 +488,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     {updateStatusText}
                   </p>
                 )}
+                <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400 pt-1 border-t border-zinc-800/80">
+                  <span className="flex items-center gap-1 text-emerald-400">
+                    <Download size={11} />
+                    <span>Lượt tải toàn cầu:</span>
+                  </span>
+                  <span className="font-bold text-zinc-200">
+                    {downloadCount !== null ? `${downloadCount} lượt tải` : 'Đang cập nhật...'}
+                  </span>
+                </div>
               </div>
 
               <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">

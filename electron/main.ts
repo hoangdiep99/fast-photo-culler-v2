@@ -11,7 +11,7 @@ process.on('unhandledRejection', (reason) => {
 import { app, BrowserWindow, ipcMain, dialog, shell, Menu, clipboard, nativeImage, protocol } from 'electron';
 import { registerUpdaterHandlers } from './updater';
 
-const APP_VERSION = '2.10.0';
+const APP_VERSION = '2.11.0';
 
 // 🚀 TỐI ƯU HÓA PHẦN CỨNG GPU DEDICATED (NVIDIA / AMD / INTEL) & RASTERIZATION SIÊU MƯỢT 120 FPS
 try {
@@ -155,7 +155,7 @@ function createWindow() {
     height: 950,
     minWidth: 1100,
     minHeight: 700,
-    title: 'Fast Photo Culler AI v2.10 - Professional RAW & JPG Viewer',
+    title: 'Fast Photo Culler AI v2.11 - Professional RAW & JPG Viewer',
     backgroundColor: '#09090b',
     darkTheme: true,
     webPreferences: {
@@ -318,7 +318,7 @@ async function sendGA4MainTelemetry() {
             'Tên PC\t': pcName,
             'Vị trí': locStr,
             'Hệ điều hành': osVer,
-            'Phiên bản App': 'v2.10',
+            'Phiên bản App': 'v2.11',
             'Mã máy ID': machineId
           }
         ]
