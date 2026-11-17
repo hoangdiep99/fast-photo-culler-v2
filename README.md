@@ -10,8 +10,8 @@
 
 [![Release Version](https://img.shields.io/badge/version-v2.12.0-amber.svg?style=for-the-badge)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
 [![Total Downloads](https://img.shields.io/github/downloads/hoangdiep99/fast-photo-culler-v2/total.svg?style=for-the-badge&logo=github&label=TỔNG%20LƯỢT%20TẢI&color=10b981)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
-[![Platform Windows](https://img.shields.io/badge/platform-Windows-blue.svg?style=for-the-badge&logo=windows)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
-[![Platform macOS](https://img.shields.io/badge/platform-macOS-black.svg?style=for-the-badge&logo=apple)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
+[![Windows Platform](https://img.shields.io/badge/Windows-Setup%20%7C%20Portable-blue.svg?style=for-the-badge&logo=windows)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
+[![macOS Platform](https://img.shields.io/badge/macOS-Apple%20Silicon%20%7C%20Intel-black.svg?style=for-the-badge&logo=apple)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases)
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![Author](https://img.shields.io/badge/author-Hoàng%20Điệp-orange.svg?style=for-the-badge&logo=facebook)](https://www.facebook.com/HoangdiepLN)
 
@@ -19,28 +19,31 @@
 
 ---
 
-### 📥 Tải về trực tiếp & Thống kê lượt tải (Downloads & Analytics)
+### 📥 Tải về trực tiếp (Direct Download Links)
 
 <p align="center">
   <a href="https://github.com/hoangdiep99/fast-photo-culler-v2/releases">
     <img src="https://img.shields.io/github/downloads/hoangdiep99/fast-photo-culler-v2/total?style=for-the-badge&logo=github&label=T%E1%BB%95ng%20l%C6%B0%E1%BB%A3t%20t%E1%BA%A3i%20to%C3%A0n%20c%E1%BA%A7u&color=10b981" alt="Tổng lượt tải toàn cầu" />
   </a>
   <a href="https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest">
-    <img src="https://img.shields.io/github/downloads/hoangdiep99/fast-photo-culler-v2/latest/total?style=for-the-badge&logo=github&label=B%E1%BA%A3n%20m%E1%BB%9Bi%20nh%E1%BA%A5t&color=0284c7" alt="Lượt tải bản mới nhất" />
+    <img src="https://img.shields.io/badge/B%E1%BA%A3n%20cho-Windows-0284c7?style=for-the-badge&logo=windows" alt="Bản Windows" />
+  </a>
+  <a href="https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest">
+    <img src="https://img.shields.io/badge/B%E1%BA%A3n%20cho-macOS-7c3aed?style=for-the-badge&logo=apple" alt="Bản macOS" />
   </a>
   <a href="https://github.com/hoangdiep99/fast-photo-culler-v2/stargazers">
     <img src="https://img.shields.io/github/stars/hoangdiep99/fast-photo-culler-v2?style=for-the-badge&logo=github&label=Stars%20y%C3%AAu%20th%C3%ADch&color=f59e0b" alt="Stars yêu thích" />
   </a>
 </p>
 
-| Hệ điều hành | Phiên bản / Gói cài đặt | Định dạng | Trạng thái gói | Tải về trực tiếp |
-| :--- | :--- | :---: | :---: | :--- |
-| **🪟 Windows (Khuyên dùng)** | **v2.12.0 Setup** (Bản cài đặt tiêu chuẩn) | `.exe` | [![Win Setup](https://img.shields.io/badge/Windows-Setup%20Installer-2563eb?style=flat-square&logo=windows)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) | [**⬇️ Tải Setup (.exe)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
-| **🪟 Windows (Chạy ngay)** | **v2.12.0 Portable** (Không cần cài đặt) | `.exe` | [![Win Portable](https://img.shields.io/badge/Windows-Portable%20Standalone-0284c7?style=flat-square&logo=windows)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) | [**⬇️ Tải Portable (.exe)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
-| **🍎 macOS (Apple Silicon)** | **Chip M1 / M2 / M3 / M4** | `.dmg` | [![macOS ARM](https://img.shields.io/badge/Apple%20Silicon-M1--M4%20ARM64-7c3aed?style=flat-square&logo=apple)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) | [**⬇️ Tải cho Apple Silicon (.dmg)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
-| **🍎 macOS (Intel)** | **Chip Intel (Core i5/i7/i9)** | `.dmg` | [![macOS Intel](https://img.shields.io/badge/Intel%20Mac-x64%20DMG-4f46e5?style=flat-square&logo=apple)](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) | [**⬇️ Tải cho Mac Intel (.dmg)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
+| Hệ điều hành | Phiên bản / Gói cài đặt | Định dạng | Tải về trực tiếp |
+| :--- | :--- | :---: | :--- |
+| **🪟 Windows (Khuyên dùng)** | **v2.12.0 Setup** (Bản cài đặt tiêu chuẩn) | `.exe` | [**⬇️ Tải Setup (.exe)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
+| **🪟 Windows (Chạy ngay)** | **v2.12.0 Portable** (Không cần cài đặt) | `.exe` | [**⬇️ Tải Portable (.exe)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
+| **🍎 macOS (Apple Silicon)** | **Chip M1 / M2 / M3 / M4** | `.dmg` | [**⬇️ Tải cho Apple Silicon (.dmg)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
+| **🍎 macOS (Intel)** | **Chip Intel (Core i5/i7/i9)** | `.dmg` | [**⬇️ Tải cho Mac Intel (.dmg)**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases/latest) |
 
-> 💡 *Bạn có thể xem toàn bộ lịch sử phát hành và các bản build cũ tại mục [**GitHub Releases**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases). Bảng thống kê chi tiết số lượt tải riêng cho từng nền tảng được hiển thị thời gian thực ngay bên trong phần mềm (tại mục **Cài đặt > Thông tin App**).*
+> 💡 *Bạn có thể xem toàn bộ lịch sử phát hành và các bản build cũ tại mục [**GitHub Releases**](https://github.com/hoangdiep99/fast-photo-culler-v2/releases).*
 
 ---
 
