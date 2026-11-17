@@ -74,7 +74,7 @@ export const Header = React.memo<HeaderProps>(({
         <img src="./icon.png" alt="Fast Photo Culler AI" className="w-5 h-5 rounded object-contain shadow-sm border border-amber-500/30" />
         <span className="tracking-wide">FAST PHOTO CULLER</span>
         <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded text-[10px] font-bold border border-amber-500/30">
-          v2.11
+          v2.12
         </span>
       </div>
 

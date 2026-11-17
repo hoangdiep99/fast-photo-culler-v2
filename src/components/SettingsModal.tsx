@@ -48,10 +48,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [isTestingApiKey, setIsTestingApiKey] = useState<boolean>(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
-  // 🔄 Update States
+  // 🔄 Update & Download Analytics States
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [updateStatusText, setUpdateStatusText] = useState<string | null>(null);
-  const [downloadCount, setDownloadCount] = useState<number | null>(null);
+  const [downloadStats, setDownloadStats] = useState<{
+    total: number;
+    setup: number;
+    portable: number;
+    macArm: number;
+    macIntel: number;
+  }>({
+    total: 0,
+    setup: 0,
+    portable: 0,
+    macArm: 0,
+    macIntel: 0,
+  });
+  const [hasLoadedStats, setHasLoadedStats] = useState(false);
 
   useEffect(() => {
     fetch('https://api.github.com/repos/hoangdiep99/fast-photo-culler-v2/releases')
@@ -59,14 +72,33 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       .then((releases) => {
         if (Array.isArray(releases)) {
           let total = 0;
+          let setup = 0;
+          let portable = 0;
+          let macArm = 0;
+          let macIntel = 0;
+
           releases.forEach((rel) => {
             if (Array.isArray(rel.assets)) {
               rel.assets.forEach((asset: any) => {
-                total += asset.download_count || 0;
+                const count = asset.download_count || 0;
+                const name = (asset.name || '').toLowerCase();
+                total += count;
+
+                if (name.includes('setup') && name.endsWith('.exe')) {
+                  setup += count;
+                } else if (name.includes('portable') && name.endsWith('.exe')) {
+                  portable += count;
+                } else if (name.includes('arm64') && (name.endsWith('.dmg') || name.endsWith('.zip'))) {
+                  macArm += count;
+                } else if ((name.includes('x64') || name.includes('intel')) && (name.endsWith('.dmg') || name.endsWith('.zip'))) {
+                  macIntel += count;
+                }
               });
             }
           });
-          setDownloadCount(total);
+
+          setDownloadStats({ total, setup, portable, macArm, macIntel });
+          setHasLoadedStats(true);
         }
       })
       .catch(() => {});
@@ -463,12 +495,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   Fast Photo Culler AI
                 </h3>
                 <p className="text-xs text-amber-400/80 font-mono font-bold">
-                  Version 2.11.0 (MediaPipe AI Powered)
+                  Version 2.12.0 (MediaPipe AI Powered)
                 </p>
               </div>
 
-              {/* Auto Update Check Box */}
-              <div className="w-full max-w-sm bg-zinc-900/60 border border-zinc-800 rounded-xl p-3 flex flex-col gap-2">
+              {/* Auto Update Check & Detailed Downloads Box */}
+              <div className="w-full max-w-sm bg-zinc-900/60 border border-zinc-800 rounded-xl p-3.5 flex flex-col gap-2.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold text-zinc-300 flex items-center gap-1.5">
                     <RefreshCw size={12} className={isCheckingUpdate ? 'animate-spin text-amber-400' : 'text-zinc-400'} />
@@ -477,25 +509,50 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <button
                     onClick={handleCheckUpdate}
                     disabled={isCheckingUpdate}
-                    className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+                    className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 disabled:opacity-50 cursor-pointer shadow-sm"
                   >
                     <RefreshCw size={11} className={isCheckingUpdate ? 'animate-spin' : ''} />
                     <span>{isCheckingUpdate ? 'Đang kiểm tra...' : 'Kiểm tra ngay'}</span>
                   </button>
                 </div>
+
                 {updateStatusText && (
-                  <p className="text-[11px] font-mono text-amber-400/90 leading-tight">
+                  <p className="text-[11px] font-mono text-amber-400/90 leading-tight bg-zinc-950/60 p-2 rounded-lg border border-zinc-800/60">
                     {updateStatusText}
                   </p>
                 )}
-                <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400 pt-1 border-t border-zinc-800/80">
-                  <span className="flex items-center gap-1 text-emerald-400">
-                    <Download size={11} />
-                    <span>Lượt tải toàn cầu:</span>
-                  </span>
-                  <span className="font-bold text-zinc-200">
-                    {downloadCount !== null ? `${downloadCount} lượt tải` : 'Đang cập nhật...'}
-                  </span>
+
+                {/* Thống kê lượt tải: Tổng & Chi tiết riêng cho từng bản */}
+                <div className="pt-2 border-t border-zinc-800/80 space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                    <span className="flex items-center gap-1 text-emerald-400 font-bold">
+                      <Download size={12} />
+                      <span>Tổng lượt tải toàn cầu:</span>
+                    </span>
+                    <span className="font-bold text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                      {hasLoadedStats ? `${downloadStats.total} lượt tải` : 'Đang cập nhật...'}
+                    </span>
+                  </div>
+
+                  {/* Lượt tải riêng biệt cho từng nền tảng Windows & Mac */}
+                  <div className="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-mono">
+                    <div className="bg-zinc-950/70 p-1.5 px-2 rounded-lg border border-zinc-800/80 flex items-center justify-between">
+                      <span className="text-blue-400 font-medium">🪟 Win Setup:</span>
+                      <span className="font-bold text-zinc-200">{downloadStats.setup} lượt</span>
+                    </div>
+                    <div className="bg-zinc-950/70 p-1.5 px-2 rounded-lg border border-zinc-800/80 flex items-center justify-between">
+                      <span className="text-sky-400 font-medium">🪟 Win Portable:</span>
+                      <span className="font-bold text-zinc-200">{downloadStats.portable} lượt</span>
+                    </div>
+                    <div className="bg-zinc-950/70 p-1.5 px-2 rounded-lg border border-zinc-800/80 flex items-center justify-between">
+                      <span className="text-purple-400 font-medium">🍎 Mac M1-M4:</span>
+                      <span className="font-bold text-zinc-200">{downloadStats.macArm} lượt</span>
+                    </div>
+                    <div className="bg-zinc-950/70 p-1.5 px-2 rounded-lg border border-zinc-800/80 flex items-center justify-between">
+                      <span className="text-indigo-400 font-medium">🍎 Mac Intel:</span>
+                      <span className="font-bold text-zinc-200">{downloadStats.macIntel} lượt</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
